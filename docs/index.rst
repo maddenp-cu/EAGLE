@@ -23,3 +23,10 @@ Table of Contents
 
    getting_started
    nested_eagle
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Community
+
+   contributing
+   support

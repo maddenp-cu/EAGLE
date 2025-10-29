@@ -96,3 +96,14 @@ Changing Variables
 ~~~~~~~~~~~~~~~~~~~~~~
 
 To change variables or levels desired, simply add or remove variables or levels within the `source` section of a recipe.yaml. Please see ufs2arco documentation for further information on exactly what variables are available.
+
+MPI Usage
+~~~~~~~~~~~~~~~~~~~~~~
+
+ufs2arco uses MPI to parallelize data preprocessing. If you wish to not use MPI, change the top line of the yaml to say
+
+.. code-block:: yaml
+
+    mover:
+    name: datamover
+    batch_size: 2
