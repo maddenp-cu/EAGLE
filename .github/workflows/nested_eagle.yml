@@ -19,6 +19,7 @@ jobs:
        uses: actions/checkout@v4 
        with:
         ref: ${{ github.event.pull_request.head.ref }} 
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
      - name: Submit Initial Grids
        run: |
          cd nested_eagle/scientific_workflow/ursa/data
