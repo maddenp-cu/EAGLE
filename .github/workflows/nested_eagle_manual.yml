@@ -11,7 +11,7 @@ jobs:
   # This workflow contains a job called submit_grids.
   Submit_Grids:
     # The type of runner that the job will run on
-    runs-on: ursa
+    runs-on: ubuntu-latest
     timeout-minutes: 1440
 
     # Steps represent a sequence of tasks that will be executed as part of the job
