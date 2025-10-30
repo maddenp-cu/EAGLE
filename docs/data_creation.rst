@@ -1,5 +1,5 @@
 =================
-Create Training Data
+Dataset Creation
 =================
 
 We use ufs2arco to generate training, validation, and test datasets. The ufs2arco library helps preprocess weather data and makes it ready to be used to train a machine learning model.
@@ -68,6 +68,8 @@ ufs2arco recipe.yaml
 
 For further information see the ufs2arco `github <https://ufs2arco.readthedocs.io/en/latest/>`_ or `documentation <https://ufs2arco.readthedocs.io/en/latest/>`_
 
+ufs2arco was created by Tim Smith at NOAA Physical Sciences Laboratory.
+
 Helpful quick tips for ufs2arco
 ------------------
 
@@ -96,3 +98,14 @@ Changing Variables
 ~~~~~~~~~~~~~~~~~~~~~~
 
 To change variables or levels desired, simply add or remove variables or levels within the `source` section of a recipe.yaml. Please see ufs2arco documentation for further information on exactly what variables are available.
+
+MPI Usage
+~~~~~~~~~~~~~~~~~~~~~~
+
+ufs2arco uses MPI to parallelize data preprocessing. If you wish to not use MPI, change the top line of the yaml to say
+
+.. code-block:: yaml
+
+    mover:
+    name: datamover
+    batch_size: 2

@@ -12,6 +12,7 @@ Table of Contents
    :maxdepth: 1
    :caption: Full Pipeline
 
+   pipeline_overview
    data_creation
    train_a_model
    inference
@@ -23,3 +24,10 @@ Table of Contents
 
    getting_started
    nested_eagle
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Community
+
+   contributing
+   support
