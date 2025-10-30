@@ -12,7 +12,7 @@ The key steps to this pipeline include:
 
 Throughout this process you will also use a `eagle-tools` library that provides various utilites for tasks such as executing certain modules or post-processing needs.
 
-For more information about model configurations or the various steps of the pipeline, please see our [documentation](https://global-eagle.readthedocs.io/en/latest/).
+For more information about model configurations or the various steps of the pipeline, please see our [documentation](https://epic-eagle.readthedocs.io/en/latest/).
 
 ---------------------
 
