@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J create_grids
-#SBATCH -o slurm_preprocessing.%j.out
-#SBATCH -e slurm_preprocessing.%j.err
+#SBATCH -o slurm/grids_preprocessing.%j.out
+#SBATCH -e slurm/grids_preprocessing.%j.err
 #SBATCH --account=epic
 #SBATCH --partition=u1-service
 #SBATCH --mem=128g

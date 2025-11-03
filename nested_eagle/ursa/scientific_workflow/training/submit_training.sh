@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -J nested_eagle
-#SBATCH -o slurm/training.out
-#SBATCH -e slurm/training.err
+#SBATCH -o slurm/training.%j.out
+#SBATCH -e slurm/training.%j.err
 #SBATCH --nodes=1
 #SBATCH --account=epic
 #SBATCH -t 03:00:00
