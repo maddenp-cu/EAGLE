@@ -16,9 +16,9 @@ export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
 export WORKDIR_BASE_PATH=$PWD
 
-sed -i "/^.*workdir:.*$/c\workdir: $BASE_PATH\/workdir\/lam" wxvx_lam.yaml
+sed -i "/^.*workdir:.*$/c\  workdir: $WORKDIR_BASE_PATH\/wxvx_workdir\/lam" wxvx_lam.yaml
 
-sed -i "/^.*workdir:.*$/c\workdir: $BASE_PATH\/workdir\/global" wxvx_global.yaml
+sed -i "/^.*workdir:.*$/c\  workdir: $WORKDIR_BASE_PATH\/wxvx_workdir\/global" wxvx_global.yaml
 
 conda activate wxvx 
 
