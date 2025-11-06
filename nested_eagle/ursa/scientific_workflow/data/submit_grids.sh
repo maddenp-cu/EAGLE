@@ -12,5 +12,7 @@
 source /scratch4/NAGAPE/epic/role-epic/miniconda/bin/activate
 conda activate eagle
 module load gcc
+
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
 python create_grids.py
