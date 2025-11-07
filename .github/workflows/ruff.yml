@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          pip -m pip install --upgrade pip
           pip install ruff
 
       - name: Run Ruff
