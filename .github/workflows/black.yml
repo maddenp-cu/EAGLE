@@ -24,5 +24,5 @@ jobs:
       - name: Install Black
         run: pip install black
 
-      - name: Run Black (check formatting)
+      - name: Run Black
         run: black --check --diff --verbose . --exclude 'global_eagle'

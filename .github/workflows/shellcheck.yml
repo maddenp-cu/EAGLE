@@ -21,9 +21,9 @@ jobs:
         with:
           ignore_paths: ./global_eagle/**
 
-      - name: Run ShellCheck on all scripts
+      - name: Run ShellCheck
         run: |
-          scripts=$(find nested_eagle -type f -name "*.sh")
+          scripts=$(find . -type f -name "*.sh")
           if [ -z "$scripts" ]; then
             echo "No shell scripts found."
           else
