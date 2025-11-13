@@ -145,7 +145,7 @@ jobs:
 
           cd $GITHUB_WORKSPACE/nested_eagle/ursa/scientific_workflow/verification/grid2grid
 
-          JOB_ID2=$(submit_grid_verification.sh | awk '{print $4}')
+          JOB_ID2=$(sbatch submit_grid_verification.sh | awk '{print $4}')
 
              echo "Submitted Slurm job with ID: $JOB_ID1"
              echo "Submitted Slurm job with ID: $JOB_ID2"
