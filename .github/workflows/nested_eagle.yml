@@ -141,7 +141,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/nested_eagle/ursa/scientific_workflow/verification/grid2obs
 
-          JOB_ID1=$(submit_obs_verification.sh | awk '{print $4}')
+          JOB_ID1=$(sbatch submit_obs_verification.sh | awk '{print $4}')
 
           cd $GITHUB_WORKSPACE/nested_eagle/ursa/scientific_workflow/verification/grid2grid
 
