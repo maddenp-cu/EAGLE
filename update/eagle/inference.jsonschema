@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "inference": {
+      "additionalProperties": false,
+      "properties": {
+        "anemoi": {
+          "type": "object"
+        },
+        "checkpoint_dir": {
+          "type": "string"
+        },
+        "execution": {
+          "$ref": "urn:uwtools:execution-serial"
+        },
+        "rundir": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "anemoi",
+        "execution",
+        "rundir"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "training"
+  ],
+  "type": "object"
+}
