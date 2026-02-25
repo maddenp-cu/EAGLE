@@ -1,31 +1,32 @@
 {
   "properties": {
-    "inference": {
+    "prewxvx": {
       "additionalProperties": false,
       "properties": {
-        "anemoi": {
+        "eagle-tools": {
           "type": "object"
-        },
-        "checkpoint_dir": {
-          "type": "string"
         },
         "execution": {
           "$ref": "urn:uwtools:execution-serial"
+        },
+        "name": {
+          "type": "string"
         },
         "rundir": {
           "type": "string"
         }
       },
       "required": [
-        "anemoi",
+        "eagle-tools",
         "execution",
+        "name",
         "rundir"
       ],
       "type": "object"
     }
   },
   "required": [
-    "inference"
+    "prewxvx"
   ],
   "type": "object"
 }

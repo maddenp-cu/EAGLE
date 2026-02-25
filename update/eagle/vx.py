@@ -6,12 +6,10 @@ from uwtools.api.config import get_yaml_config
 from uwtools.api.driver import DriverTimeInvariant
 
 
-class Zarr(DriverTimeInvariant):
+class VX(DriverTimeInvariant):
     """
-    Creates Zarr-formatted training datasets.
+    Run verification for a single method (grid2grid or grid2obs) and domain (global or lam).
     """
-
-    # Public tasks
 
     @collection
     def provisioned_rundir(self):
@@ -21,25 +19,25 @@ class Zarr(DriverTimeInvariant):
         yield self.taskname(f"{self._name} provisioned run directory")
         yield [
             self.runscript(),
-            self.ufs2arco_config(),
+            self.wxvx_config(),
         ]
 
     @task
-    def ufs2arco_config(self):
+    def wxvx_config(self):
         """
-        The ufs2arco config, written to the rundir.
+        WXVX config written to the rundir.
         """
-        yield self.taskname(f"ufs2arco {self._name} config")
-        path = self.rundir / f"ufs2arco-{self._name}.yaml"
+        yield self.taskname(f"{self._name} config")
+        path = self.rundir / f"wxvx-{self._name}.yaml"
         yield Asset(path, path.is_file)
         yield None
-        get_yaml_config(self.config["ufs2arco"]).dump(path)
+        get_yaml_config(self.config["wxvx"]).dump(path)
 
     # Public methods
 
     @classmethod
     def driver_name(cls) -> str:
-        return "zarr"
+        return "vx"
 
     # Private methods
 

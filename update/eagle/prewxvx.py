@@ -6,12 +6,24 @@ from uwtools.api.config import get_yaml_config
 from uwtools.api.driver import DriverTimeInvariant
 
 
-class Zarr(DriverTimeInvariant):
+class PreWXVX(DriverTimeInvariant):
     """
-    Creates Zarr-formatted training datasets.
+    Prepares the config for and runs eagle-tools' prewxvx component.
     """
 
     # Public tasks
+
+    @task
+    def eagle_tools_config(self):
+        """
+        Prewxvx config for this run, written to the rundir.
+        """
+        yield self.taskname(f"prewxvx {self._name} config")
+        path = self.rundir / f"prewxvx-{self._name}.yaml"
+        yield Asset(path, path.is_file)
+        yield None
+        path.parent.mkdir(parents=True, exist_ok=True)
+        get_yaml_config(self.config["eagle-tools"]).dump(path)
 
     @collection
     def provisioned_rundir(self):
@@ -20,26 +32,15 @@ class Zarr(DriverTimeInvariant):
         """
         yield self.taskname(f"{self._name} provisioned run directory")
         yield [
+            self.eagle_tools_config(),
             self.runscript(),
-            self.ufs2arco_config(),
         ]
-
-    @task
-    def ufs2arco_config(self):
-        """
-        The ufs2arco config, written to the rundir.
-        """
-        yield self.taskname(f"ufs2arco {self._name} config")
-        path = self.rundir / f"ufs2arco-{self._name}.yaml"
-        yield Asset(path, path.is_file)
-        yield None
-        get_yaml_config(self.config["ufs2arco"]).dump(path)
 
     # Public methods
 
     @classmethod
     def driver_name(cls) -> str:
-        return "zarr"
+        return "prewxvx"
 
     # Private methods
 

@@ -1,9 +1,11 @@
 SRCDIRS  = eagle
 REALIZED = realized.yaml
-TARGETS  = data devenv env format grids-and-meshes inference lint realize-config test training typecheck zarr-gfs zarr-hrrr
+TARGETS  = data devenv env format grids-and-meshes inference lint prewxvx-global prewxvx-lam realize-config test training typecheck vx-grid-global vx-grid-lam vx-obs-global vx-obs-lam zarr-gfs zarr-hrrr
 
 activate = source conda/etc/profile.d/conda.sh && conda activate $(1)
-exec     = uw execute --config-file nested_eagle.yaml --module eagle/$(1).py --classname $(2) --task $(3)
+exec     = uw execute --config-file eagle.yaml --module eagle/$(1).py --classname $(2) --task $(3)
+prewxvx  = $(call exec,prewxvx,PreWXVX,run --key-path prewxvx.$(1))
+wxvx     = $(call exec,vx,VX,run --key-path vx.$(1).$(2) --batch)
 zarr     = $(call exec,zarr,Zarr,run --key-path zarrs.$(1) --batch)
 
 .ONESHELL:
@@ -41,6 +43,14 @@ lint:
 	$(call activate,anemoi)
 	ruff check $(SRCDIRS)
 
+prewxvx-global:
+	$(call activate,vx)
+	$(call prewxvx,global)
+
+prewxvx-lam:
+	$(call activate,vx)
+	$(call prewxvx,lam)
+
 realize-config: $(REALIZED)
 
 test: lint typecheck
@@ -54,6 +64,22 @@ typecheck:
 	@echo "=> Typechecking code"
 	mypy $(SRCDIRS)
 
+vx-grid-global:
+	$(call activate,vx)
+	$(call wxvx,grid2grid,global)
+
+vx-grid-lam:
+	$(call activate,vx)
+	$(call wxvx,grid2grid,lam)
+
+vx-obs-global:
+	$(call activate,vx)
+	$(call wxvx,grid2obs,global)
+
+vx-obs-lam:
+	$(call activate,vx)
+	$(call wxvx,grid2obs,lam)
+
 zarr-gfs:
 	$(call activate,data)
 	$(call zarr,gfs)
@@ -62,6 +88,6 @@ zarr-hrrr:
 	$(call activate,data)
 	$(call zarr,hrrr)
 
-$(REALIZED): nested_eagle.yaml
+$(REALIZED): eagle.yaml
 	$(call activate,base)
 	uw config realize --input-file $< --output-file $@

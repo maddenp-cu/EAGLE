@@ -14,6 +14,9 @@ class Training(DriverTimeInvariant):
 
     @task
     def anemoi_config(self):
+        """
+        The anemoi-training default and custom configs, written to the rundir.
+        """
         yield self.taskname("training config")
         path = self.rundir / "training.yaml"
         yield Asset(path, path.is_file)
@@ -32,6 +35,9 @@ class Training(DriverTimeInvariant):
 
     @task
     def runscript(self):
+        """
+        Script to run the training executable, removing any specified config keys.
+        """
         yield self.taskname("training runscript")
         path = self._runscript_path
         yield Asset(path, path.is_file)
@@ -43,6 +49,9 @@ class Training(DriverTimeInvariant):
 
     @collection
     def provisioned_rundir(self):
+        """
+        Rundir provisioned with the training config and runscript.
+        """
         yield self.taskname("provisioned run directory")
         yield [
             self.anemoi_config(),
