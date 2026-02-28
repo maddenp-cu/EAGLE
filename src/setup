@@ -68,16 +68,6 @@ conda_create_inference() {
   pip_install $name anemoi-inference==0.7.* anemoi-models==0.9.* eagle-tools
 }
 
-conda_create_training() {
-  local name=training
-  conda_env_exists $name && return || true
-  (
-    CONDA_OVERRIDE_CUDA=$(cuda_release) conda_create $name flash-attn=2.8.* python=3.12
-    conda_activate $name
-  )
-  pip_install $name anemoi-models==0.9.* anemoi-training==0.6.*
-}
-
 conda_create_data() {
   local name=data
   conda_env_exists $name && return || true
@@ -103,6 +93,17 @@ fi
 EOF
   )
   pip_install $name anemoi-datasets==0.5.* anemoi-graphs==0.6.*
+}
+
+conda_create_training() {
+  local name=training
+  conda_env_exists $name && return || true
+  (
+    CONDA_OVERRIDE_CUDA=$(cuda_release) conda_create $name flash-attn=2.8.* python=3.12
+    conda_activate $name
+    write_anemoi_activation_scripts
+  )
+  pip_install $name anemoi-models==0.9.* anemoi-training==0.6.*
 }
 
 conda_create_vx() {
