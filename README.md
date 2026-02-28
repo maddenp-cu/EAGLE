@@ -13,11 +13,11 @@ This repository contains configuration and driver code for running an end-to-end
 
 In the `src/` directory:
 
-### 1. Run `make env`.
+### 1. Run `make env cudascript=ursa`.
 
-This step creates the runtime software environment, comprising conda virtual environments `data`, `training`, `inference`, and `vx` for data prep, training, inference, and verification, respectively. The `conda/` subdirectory it creates is self-contained and can be removed and recreated by running `make env` again, as long as pipeline steps are not currently running.
+This step creates the runtime software environment, comprising conda virtual environments `data`, `training`, `inference`, and `vx` for data prep, training, inference, and verification, respectively. The `conda/` subdirectory it creates is self-contained and can be removed and recreated by running the `make env` command again, as long as pipeline steps are not currently running.
 
-Developers who will be modifying Python driver code should instead use `make devenv`, which will create the same environments but also install additional code-quality tools for formatting, linting, typechecking, and unit testing.
+Developers who will be modifying Python driver code should replace `make env` with `make devenv`, which will create the same environments but also install additional code-quality tools for formatting, linting, typechecking, and unit testing.
  
 ### 2. Set the `app.base` value in `eagle.yaml` to the absolute path to the current (`src/`) directory.
 
