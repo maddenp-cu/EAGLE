@@ -23,9 +23,9 @@ all:
 	false
 
 data:
-	$(make) grids-and-meshes
-	$(make) zarr-gfs
-	$(make) zarr-hrrr
+	@$(make) grids-and-meshes
+	@$(make) zarr-gfs
+	@$(make) zarr-hrrr
 
 devenv:
 	$(call check,$(cudascript),cudascript)
