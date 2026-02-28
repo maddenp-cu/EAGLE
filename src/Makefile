@@ -114,16 +114,16 @@ else
 endif
 
 vx-grid-global:
-	$(make) vx truth=grid2grid extent=global
+	@$(make) vx truth=grid2grid extent=global
 
 vx-grid-lam:
-	$(make) vx truth=grid2grid extent=lam
+	@$(make) vx truth=grid2grid extent=lam
 
 vx-obs-global:
-	$(make) vx truth=grid2obs extent=global
+	@$(make) vx truth=grid2obs extent=global
 
 vx-obs-lam:
-	$(make) vx truth=grid2obs extent=lam
+	@$(make) vx truth=grid2obs extent=lam
 
 zarr:
 	$(call activate,data)
@@ -136,7 +136,7 @@ else
 endif
 
 zarr-gfs:
-	$(make) zarr source=gfs
+	@$(make) zarr source=gfs
 
 zarr-hrrr:
-	$(make) zarr source=hrrr
+	@$(make) zarr source=hrrr

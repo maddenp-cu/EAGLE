@@ -39,7 +39,7 @@ This step performs inference, producing a forecast. It submits a batch job: Do n
 
 These steps prepare forecast output from the previous step for verification by `wxvx`. They run locally, it is safe to proceed when the commands return. See the files `run/vx/prewxvx/{global,lam}/runscript.prewxvx-*.out` for details.
 
-### 7. Run any or all of `make vx-grid-global config=eagle.yaml`, `make vx-grid-lam config=eagle.yaml`, `make vx-obs-global config=eagle.yaml`, `make vs-obs-lam config=eagle.yaml`.
+### 7. Run any or all of `make vx-grid-global config=eagle.yaml`, `make vx-grid-lam config=eagle.yaml`, `make vx-obs-global config=eagle.yaml`, `make vx-obs-lam config=eagle.yaml`.
 
 These steps perform verification, either of the `global` or `lam` forecasts, and against gridded analyses (`*-grid-*`) or prepbufr observations (`*-obs-*`) as truth. Each submits a batch job, so the four `make` commands can be run in quick succession to get all the batch jobs running in parallel. When each batch job completes, MET `.stat` files and `.png` plot files can be found under the `stats/` and `plots/` subdirectories of `run/vx/grid2{grid,obs}/{global,lam}/run/`. The files `run/vx/*.log` contain the logs from each verification run.
 
