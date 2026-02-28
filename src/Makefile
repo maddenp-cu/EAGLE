@@ -77,10 +77,10 @@ else
 endif
 
 prewxvx-global:
-	$(make) prewxvx extent=global
+	@$(make) prewxvx extent=global
 
 prewxvx-lam:
-	$(make) prewxvx extent=lam
+	@$(make) prewxvx extent=lam
 
 test: lint typecheck
 
