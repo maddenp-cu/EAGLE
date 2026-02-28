@@ -53,6 +53,8 @@ make env cudascript=<name-or-path> # alternatively: ./setup cudascript=<name-or-
 
 This will install Miniforge conda in the current directory and create the virtual environments `data`, `training`, `inference`, and `vx`.
 
+The value of the `cudascript=` argument should be either the name of a file under `src/cuda/` (e.g. `cudascript=ursa`), or an arbitrary path to a file (e.g. `cudascript=/path/to/file`). The file should contain a list of commands that need to be executed on the current system to make the CUDA `nvcc` program available on `PATH`. The `setup` script uses `nvcc` to determine the CUDA release number, used to select a matching `flash-attn` package. For systems needing no special setup to make `nvcc` available, `cudascript=none` may be specified.
+
 A variety of `make` targets are available to execute pipeline steps:
 
 | Target           | Purpose                                       | Depends on target | Uses environment |
@@ -203,6 +205,8 @@ To build the runtime virtual environments **and** install all required developme
 ``` bash
 make devenv cudascript=<name-or-path> # alternatively: EAGLE_DEV=1 ./setup cudascript=<name-or-path>
 ```
+
+See [Runtime Environment](#runtime-environment) for a description of the `cudascript=` argument.
 
 After successful completion, the following `make` targets will be available:
 
