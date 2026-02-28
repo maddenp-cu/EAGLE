@@ -4,13 +4,12 @@ PACKAGE = eagle
 STEPS   = data grids-and-meshes inference prewxvx-global prewxvx-lam training vx-grid-global vx-grid-lam vx-obs-global vx-obs-lam zarr-gfs zarr-hrrr
 TOOLING = devenv env format lint test typecheck
 
-activate = source conda/etc/profile.d/conda.sh && conda activate $(1)
-checkcfg = @$(if $(config),,$(error config= argument required))
-envloop   = @for env in $(ENVS); do $(MAKE) --no-print-directory env=$$env $(1); done
-exec     = uw execute --config-file $(config) --module $(PACKAGE)/$(1)/$(2).py --classname $(3) --task $(4)
-prewxvx  = $(call exec,vx,prewxvx,PreWXVX,run --key-path prewxvx.$(1))
-wxvx     = $(call exec,vx,vx,VX,run --key-path vx.$(1).$(2) --batch)
-zarr     = $(call exec,data,zarr,Zarr,run --key-path zarrs.$(1) --batch)
+activate = @source conda/etc/profile.d/conda.sh && conda activate $(1)
+check    = @$(if $(1),,$(error $(2)= argument required))
+envloop  = @for env in $(ENVS); do $(make) env=$$env $(1); done
+exec     = set -x && uw execute --config-file $(config) --module $(PACKAGE)/$(1)/$(2).py --classname $(3) --task $(4)
+make     = $(MAKE) --no-print-directory
+tasklist = @(set -x && uw execute --module $(PACKAGE)/$(1)/$(2).py --classname $(3)) || true
 
 .ONESHELL:
 .PHONY: $(HELPERS) $(STEPS) $(TOOLING)
@@ -24,9 +23,9 @@ all:
 	false
 
 data:
-	$(MAKE) grids-and-meshes
-	$(MAKE) zarr-gfs
-	$(MAKE) zarr-hrrr
+	$(make) grids-and-meshes
+	$(make) zarr-gfs
+	$(make) zarr-hrrr
 
 devenv:
 	EAGLE_DEV=1 ./setup
@@ -39,15 +38,22 @@ format:
 	./format $(PACKAGE)
 
 grids-and-meshes:
-	$(call checkcfg)
-	export FI_PSM3_UUID=eagle
 	$(call activate,data)
-	$(call exec,data,grids_and_meshes,GridsAndMeshes,provisioned_rundir)
+ifeq ($(task),?)
+	$(call tasklist,data,grids_and_meshes,GridsAndMeshes)
+else
+	$(call check,$(config),config)
+	$(call exec,data,grids_and_meshes,GridsAndMeshes,$(or $(task),provisioned_rundir))
+endif
 
 inference:
-	$(call checkcfg)
 	$(call activate,inference)
-	$(call exec,inference,inference,Inference,run --batch)
+ifeq ($(task),?)
+	$(call tasklist,inference,inference,Inference)
+else
+	$(call check,$(config),config)
+	$(call exec,inference,inference,Inference,$(or $(task),run) --batch)
+endif
 
 lint:
 ifdef env
@@ -59,22 +65,31 @@ else
 endif
 
 prewxvx:
-	$(call checkcfg)
 	$(call activate,vx)
-	$(call prewxvx,$(extent))
+ifeq ($(task),?)
+	$(call tasklist,vx,prewxvx,PreWXVX)
+else
+	$(call check,$(config),config)
+	$(call check,$(extent),extent)
+	$(call exec,vx,prewxvx,PreWXVX,$(or $(task),run) --key-path prewxvx.$(extent))
+endif
 
 prewxvx-global:
-	$(MAKE) prewxvx extent=global
+	$(make) prewxvx extent=global
 
 prewxvx-lam:
-	$(MAKE) prewxvx extent=lam
+	$(make) prewxvx extent=lam
 
 test: lint typecheck
 
 training:
-	$(call checkcfg)
 	$(call activate,training)
-	$(call exec,training,training,Training,run --batch)
+ifeq ($(task),?)
+	$(call tasklist,training,training,Training)
+else
+	$(call check,$(config),config)
+	$(call exec,training,training,Training,$(or $(task),run) --batch)
+endif
 
 typecheck:
 ifdef env
@@ -82,33 +97,44 @@ ifdef env
 	$(call activate,$(env))
 	mypy $(PACKAGE)/$(env)
 else
-	$(call envloop,lint)
+	$(call envloop,typecheck)
 endif
 
 vx:
-	$(call checkcfg)
 	$(call activate,vx)
-	$(call wxvx,$(truth),$(extent))
+ifeq ($(task),?)
+	$(call tasklist,vx,vx,VX)
+else
+	$(call check,$(config),config)
+	$(call check,$(extent),extent)
+	$(call check,$(truth),truth)
+	$(call exec,vx,vx,VX,$(or $(task),run) --key-path vx.$(truth).$(extent) --batch)
+endif
 
 vx-grid-global:
-	$(MAKE) vx truth=grid2grid extent=global
+	$(make) vx truth=grid2grid extent=global
 
 vx-grid-lam:
-	$(MAKE) vx truth=grid2grid extent=lam
+	$(make) vx truth=grid2grid extent=lam
 
 vx-obs-global:
-	$(MAKE) vx truth=grid2obs extent=global
+	$(make) vx truth=grid2obs extent=global
 
 vx-obs-lam:
-	$(MAKE) vx truth=grid2obs extent=lam
+	$(make) vx truth=grid2obs extent=lam
 
 zarr:
-	$(call checkcfg)
 	$(call activate,data)
-	$(call zarr,$(source))
+ifeq ($(task),?)
+	$(call tasklist,data,zarr,Zarr)
+else
+	$(call check,$(config),config)
+	$(call check,$(source),source)
+	$(call exec,data,zarr,Zarr,$(or $(task),run) --key-path zarrs.$(source) --batch)
+endif
 
 zarr-gfs:
-	$(MAKE) zarr source=gfs
+	$(make) zarr source=gfs
 
 zarr-hrrr:
-	$(MAKE) zarr source=hrrr
+	$(make) zarr source=hrrr

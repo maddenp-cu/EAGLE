@@ -23,23 +23,23 @@ Developers who will be modifying Python driver code should instead use `make dev
 
 The run directories from subsequent steps, along with the output of those steps, will be created in the `run/` subdirectory of `app.base`.
 
-### 3. Run `make config=eagle.yaml data`.
+### 3. Run `make data config=eagle.yaml`.
 
-This step provisions data required for training and inference. The `data` target delegates to targets `grids-and-meshes`, `zarr-gfs`, and `zarr-hrrr`, which can also be run individually (e.g. `make grids-and-meshes`), but note that `grids-and-meshes`, which runs locally, must be run first. The `zarr-gfs` and `zarr-hrrr` targets can be run in quick succession, as they submit batch jobs: Do not proceed until their batch jobs complete successfully (see the files `run/data/*.out`).
+This step provisions data required for training and inference. The `data` target delegates to targets `grids-and-meshes`, `zarr-gfs`, and `zarr-hrrr`, which can also be run individually (e.g. `make grids-and-meshes config=eagle.yaml`), but note that `grids-and-meshes`, which runs locally, must be run first. The `zarr-gfs` and `zarr-hrrr` targets can be run in quick succession, as they submit batch jobs: Do not proceed until their batch jobs complete successfully (see the files `run/data/*.out`).
 
-### 4. Run `make config=eagle.yaml training`.
+### 4. Run `make training config=eagle.yaml`.
 
 This step trains a model using data provisioned by the previous step. It submits a batch job: Do not proceed until the batch job completes successfully (see the file `run/training/runscript.training.out`).
 
-### 5. Run `make config=eagle.yaml inference`.
+### 5. Run `make inference config=eagle.yaml`.
 
 This step performs inference, producing a forecast. It submits a batch job: Do not proceed until the batch job completes successfully (see the file `run/inference/runscript.inference.out`.)
 
-### 6. Run `make config=eagle.yaml prewxvx-global` followed by `make config=eagle.yaml prewxvx-lam`.
+### 6. Run `make prewxvx-global config=eagle.yaml` followed by `make prewxvx-lam config=eagle.yaml`.
 
 These steps prepare forecast output from the previous step for verification by `wxvx`. They run locally, it is safe to proceed when the commands return. See the files `run/vx/prewxvx/{global,lam}/runscript.prewxvx-*.out` for details.
 
-### 7. Run `make config=eagle.yaml` followed by any of the targets `vx-grid-global`, `vx-grid-lam`, `vx-obs-global`, `vs-obs-lam`.
+### 7. Run any or all of `make vx-grid-global config=eagle.yaml`, `make vx-grid-lam config=eagle.yaml`, `make vx-obs-global config=eagle.yaml`, `make vs-obs-lam config=eagle.yaml`.
 
 These steps perform verification, either of the `global` or `lam` forecasts, and against gridded analyses (`*-grid-*`) or prepbufr observations (`*-obs-*`) as truth. Each submits a batch job, so the four `make` commands can be run in quick succession to get all the batch jobs running in parallel. When each batch job completes, MET `.stat` files and `.png` plot files can be found under the `stats/` and `plots/` subdirectories of `run/vx/grid2{grid,obs}/{global,lam}/run/`. The files `run/vx/*.log` contain the logs from each verification run.
 
@@ -142,6 +142,58 @@ Configuration for the `Zarr` driver.
 - This driver executes the [ufs2arco](https://ufs2arco.readthedocs.io/en/latest/) component.
 - The `gfs:` and `hrrr:` sub-blocks provide refinements for ingesting GFS and HRRR data, respectively, for EAGLE.
 
+## Drivers
+
+The various software components required by EAGLE are executed by `uwtools` drivers implemented as Python modules under `src/eagle/`. By default, the targets in `src/Makefile` invoke drivers' most comprehensive tasks, i.e. those that configure and execute the component to produce its final output. However, each driver provides a number of tasks, some depending on others, and lower-level tasks can be invoked to request less than full execution of the driver, which can be useful during development and debugging.
+
+To request a specific task, add a `task=` clause to the appropriate `make` target. To see a list of available tasks, specify `task=?`.
+
+For example:
+
+``` bash
+$ make inference config=eagle.yaml task=?
++ uw execute --module eagle/inference/inference.py --classname Inference
+[2026-02-27T23:58:43]    ERROR Available tasks:
+[2026-02-27T23:58:43]    ERROR   anemoi_config
+[2026-02-27T23:58:43]    ERROR     Anemoi-inference config created with specified checkpoint path.
+[2026-02-27T23:58:43]    ERROR   provisioned_rundir
+[2026-02-27T23:58:43]    ERROR     Run directory provisioned with all required content.
+[2026-02-27T23:58:43]    ERROR   run
+[2026-02-27T23:58:43]    ERROR     A run.
+[2026-02-27T23:58:43]    ERROR   runscript
+[2026-02-27T23:58:43]    ERROR     The runscript.
+[2026-02-27T23:58:43]    ERROR   show_output
+[2026-02-27T23:58:43]    ERROR     Show the output to be created by this component.
+[2026-02-27T23:58:43]    ERROR   validate
+[2026-02-27T23:58:43]    ERROR     Validate the UW driver config.
+```
+
+For example, the `provisioned_rundir` task would provision the run directory with all its required content, but would not execute the `anemoi-inference` component. The `run` task would fully execute inference.
+
+To invoke the `Inference` driver's `runscript` task, provisioning only the component's runscript:
+
+``` bash
+$ make inference config=eagle.yaml task=runscript
++ uw execute --config-file eagle.yaml --module eagle/inference/inference.py --classname Inference --task runscript --batch
+[2026-02-27T22:35:11]     INFO Schema validation succeeded for inference config
+[2026-02-27T22:35:11]     INFO Validating config against internal schema: platform
+[2026-02-27T22:35:11]     INFO Schema validation succeeded for platform config
+[2026-02-27T22:35:11]     INFO inference runscript.inference: Executing
+[2026-02-27T22:35:11]     INFO inference runscript.inference: Ready
+```
+
+The previously non-existent `run/inference/` directory now contains:
+
+``` bash
+$ tree run/inference/
+run/inference/
+└── runscript.inference
+
+1 directory, 1 file
+```
+
+Since `uwtools` driver tasks are idempotent, now that `runscript.inference` exists, it will not be overwritten by subsequent driver invocations. So, it could now be manually edited to e.g. add debugging statements, and the `run` task then invoked to execute inference with the debugging statements in place. If `runscript.inference` were manually deleted and the driver invoked again, the runscript would be recreated with its default contents.
+
 ## Development
 
 ### Environment
@@ -161,7 +213,7 @@ make typeheck # run the typechecker on Python code
 make test     # all of the above except formatting
 ```
 
-The `lint` and `typecheck` targets accept an optional `env=<name>` key-value pair that, if provided, will restrict the tool to the code associated with a particular virtual environment. For example, `make env=data lint` will lint only the code associated with the `data` environment. If no `env` value is provided, all code will be tested.
+The `lint` and `typecheck` targets accept an optional `env=<name>` key-value pair that, if provided, will restrict the tool to the code associated with a particular virtual environment. For example, `make lint env=data` will lint only the code associated with the `data` environment. If no `env` value is provided, all code will be tested.
 
 ## Notes
 
