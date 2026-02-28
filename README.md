@@ -48,7 +48,7 @@ These steps perform verification, either of the `global` or `lam` forecasts, and
 To build the EAGLE runtime virtual environments:
 
 ``` bash
-make env # alternatively: ./setup
+make env cudascript=<name-or-path> # alternatively: ./setup cudascript=<name-or-path>
 ```
 
 This will install Miniforge conda in the current directory and create the virtual environments `data`, `training`, `inference`, and `vx`.
@@ -201,7 +201,7 @@ Since `uwtools` driver tasks are idempotent, now that `runscript.inference` exis
 To build the runtime virtual environments **and** install all required development packages in each environment:
 
 ``` bash
-make devenv # alternatively: EAGLE_DEV=1 ./setup
+make devenv cudascript=<name-or-path> # alternatively: EAGLE_DEV=1 ./setup cudascript=<name-or-path>
 ```
 
 After successful completion, the following `make` targets will be available:

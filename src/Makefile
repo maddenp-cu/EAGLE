@@ -28,10 +28,12 @@ data:
 	$(make) zarr-hrrr
 
 devenv:
-	EAGLE_DEV=1 ./setup
+	$(call check,$(cudascript),cudascript)
+	EAGLE_DEV=1 ./setup cudascript=$(cudascript)
 
 env:
-	./setup
+	$(call check,$(cudascript),cudascript)
+	./setup cudascript=$(cudascript)
 
 format:
 	$(call activate,base)
