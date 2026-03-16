@@ -40,7 +40,7 @@ jobs:
 
     - name: Build documentation
       run: |
-        ./.github/scripts/build_docs.sh
+        bash .github/scripts/build_docs.sh
 
     - name: Upload documentation (on success)
       uses: actions/upload-artifact@v4
