@@ -4,6 +4,8 @@ Runtime Environment
 
 To build the EAGLE runtime virtual environments::
 
+.. code-block:: text
+
     make env cudascript=<name-or-path> # alternatively: ./setup cudascript=<name-or-path>
 
 This will install Miniforge conda in the current directory and create the various virtual environments.
