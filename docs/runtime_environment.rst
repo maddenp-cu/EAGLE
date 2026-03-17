@@ -2,7 +2,7 @@
 Runtime Environment
 =========================
 
-To build the EAGLE runtime virtual environments::
+To build the EAGLE runtime virtual environments:
 
 .. code-block:: text
 
@@ -14,7 +14,7 @@ The value of the ``cudascript=`` argument should be either the name of a file un
 or an arbitrary path to a file (e.g. ``cudascript=/path/to/file``). The file should contain a list of commands that need 
 to be executed on the current system to make the CUDA ``nvcc`` program available on ``PATH``. The ``setup`` script uses ``nvcc`` 
 to determine the CUDA release number, used to select a matching ``flash-attn`` package. For systems needing no special 
-setup to make ``nvcc` available, `cudascript=none` may be specified.
+setup to make ``nvcc`` available, ``cudascript=none`` may be specified.
 
 A variety of ``make`` targets are available to execute pipeline steps.
 

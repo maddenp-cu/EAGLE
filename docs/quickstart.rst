@@ -66,7 +66,9 @@ completes successfully (see the file ``run/<expname>inference/runscript.inferenc
 
 **7. Postprocess model output**
 
-Run::
+Run:
+
+.. code-block:: text
     
     make prewxvx-global config=eagle.yaml
     make prewxvx-lam config=eagle.yaml
@@ -76,7 +78,9 @@ safe to proceed when the commands return. See the files ``run/<expname>vx/prewxv
 
 **8. Model verification**
 
-Run::
+Run:
+
+.. code-block:: text
     
     make vx-grid-global config=eagle.yaml
     make vx-grid-lam config=eagle.yaml

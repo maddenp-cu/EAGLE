@@ -15,7 +15,9 @@ To build the runtime virtual environments **and** install all required developme
 
 See Runtime Environment above for a description of the ``cudascript=`` argument.
 
-After successful completion, the following ``make`` targets will be available::
+After successful completion, the following ``make`` targets will be available:
+
+.. code-block:: text
 
     make format     # format Python code
     make lint       # run a linter on Python code
