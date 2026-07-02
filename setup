@@ -242,7 +242,7 @@ MAMBAFLAGS=(--log-level error --yes)
 MAMBA_ROOT_PREFIX=$INSTALLDIR
 XDG_CACHE_HOME=$(cachedir)
 export CONDA_OVERRIDE_CUDA MAMBA_ROOT_PREFIX XDG_CACHE_HOME
-environments=(anemoi base data visualization wxvx)
+environments=(anemoi base data)
 for name in ${environments[@]}; do
   time prep_env_$name
 done
